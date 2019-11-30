@@ -1,0 +1,6 @@
+{:name            "StatusChat"
+ :builds          {} ; Make spec happy
+ :js-modules      ["react-native"
+                   "react-native-fast-image"]
+ :figwheel-bridge "./figwheel-bridge.js"
+ :resource-dirs   ["resources"]}
