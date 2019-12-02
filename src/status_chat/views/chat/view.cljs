@@ -188,17 +188,23 @@
      :incoming {:color black}
      :outgoing {:color white})))
 
-(def read-more-style
-  {:padding-bottom             8
-   :align-items                "center"
-   :justify-content            "flex-end"
-   :margin-top                 9
-   :border-bottom-right-radius 16
-   :border-bottom-left-radius  4
-   :padding-top                31
-   :bottom                     0
-   :width                      "100%"
-   :position                   "absolute"})
+(def read-more-height 72)
+
+(defn read-more-style [sender]
+  (merge
+   {:padding-bottom  8
+    :align-items     "center"
+    :justify-content "flex-end"
+    :margin-top      (* 0.1 read-more-height)
+    :height          (* 0.9 read-more-height) ; Imitate 90%
+    :bottom          0
+    :width           "100%"
+    :position        "absolute"}
+   (case sender
+     :incoming {:border-bottom-right-radius 16
+                :border-bottom-left-radius  4}
+     :outgoing {:border-bottom-right-radius 4
+                :border-bottom-left-radius  16})))
 
 (def read-less-style
   {:padding-bottom  8
@@ -214,17 +220,22 @@
    :justify-content  "center"
    :background-color "#939BA1"})
 
-(defn read-more [{:keys [open]}]
+(defn gradient-colors [sender]
+  (clj->js (case sender
+             :incoming ["rgba(236, 239, 252, 0)" "rgba(236, 239, 252, 1)"]
+             :outgoing ["rgba(67, 96, 223, 0)" "rgba(67, 96, 223, 1)"])))
+
+(defn read-more [{:keys [sender open]}]
   [react/view {}
    [react/touchable-opacity {:on-press open
                              ;; FIXME: Touchable with position absolute does not receive touches
                              ;; so I made a hack with manipulation of sizes
                              :style    {:width   "100%"
-                                        :height  72
-                                        :top     -72
+                                        :height  read-more-height
+                                        :top     (- read-more-height)
                                         :z-index 10}}
-    [linear-gradient {:colors (clj->js ["rgba(236, 239, 252, 0)" "rgba(236, 239, 252, 1)"])
-                      :style  read-more-style}
+    [linear-gradient {:colors (gradient-colors sender)
+                      :style  (read-more-style sender)}
      [react/view {:style read-more-icon-style}
       ;; Should be icon instead of text
       [react/text "⌄"]]]]])
@@ -248,7 +259,7 @@
         ;; thats a fast solution but not best for production
         (when (and long-text (not @open)
                    (not @height) @layout)
-          (reset! height (- (oget @layout "height") 72)))
+          (reset! height (- (oget @layout "height") read-more-height)))
         [react/view {:on-layout #(reset! layout (oget % "nativeEvent" "layout"))
                      :style     (if (and (not @open) @height)
                                   {:height @height}
@@ -264,7 +275,8 @@
          (when long-text
            (if @open
              [read-less {:close #(reset! open false)}]
-             [read-more {:open #(reset! open true)}]))]))))
+             [read-more {:sender sender
+                         :open   #(reset! open true)}]))]))))
 
 ;; Emoji message component
 (defn emoji-message [sender {:keys [emoji]
