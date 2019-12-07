@@ -10,6 +10,14 @@
                     :output-dir    "target/android"
                     :npm-deps      true
                     :target        :nodejs
+                    :optimizations :none}}
+    :ios
+    {:source-paths ["react_native/src" "src" "env/dev/env/ios"]
+     :compiler     {:output-to     "target/ios/app.js"
+                    :main          'env.ios.main
+                    :output-dir    "target/ios"
+                    :npm-deps      true
+                    :target        :nodejs
                     :optimizations :none}}}
    :advanced
    {:android
@@ -18,6 +26,19 @@
                     :source-map         "index.android.js.map"
                     :main               'env.android.main
                     :output-dir         "target/android-prod"
+                    :elide-asserts      true
+                    :static-fns         true
+                    :optimize-constants true
+                    :npm-deps           true
+                    :target             :nodejs
+                    :optimizations      :advanced
+                    :closure-defines    {"goog.DEBUG" false}}}
+    :ios
+    {:source-paths ["react_native/src" "src" "env/prod/env/ios"]
+     :compiler     {:output-to          "index.ios.js"
+                    :source-map         "index.ios.js.map"
+                    :main               'env.ios.main
+                    :output-dir         "target/ios-prod"
                     :elide-asserts      true
                     :static-fns         true
                     :optimize-constants true

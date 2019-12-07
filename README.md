@@ -33,6 +33,16 @@ $ yarn run android
 Due to a known bug in react-native you should open the debugger link manually in browser
 [http://localhost:8081/debugger-ui/](http://localhost:8081/debugger-ui/)
 
+### Example of running ios app
+```
+$ clj -R:repl build.clj figwheel -p android -a [avd|real|genymotion]
+```
+Now you need to run react-native and app will open on the device
+
+```
+$ yarn run ios
+```
+
 ## Advanced CLJS compilation
 ```
 $ clj -C:mobile build.clj compile advanced [ios | android]
