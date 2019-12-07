@@ -35,7 +35,7 @@ Due to a known bug in react-native you should open the debugger link manually in
 
 ### Example of running ios app
 ```
-$ clj -R:repl build.clj figwheel -p android -a [avd|real|genymotion]
+$ clj -R:repl build.clj figwheel -p ios -i [simulator|real]
 ```
 Now you need to run react-native and app will open on the device
 
